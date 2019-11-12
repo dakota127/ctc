@@ -21,7 +21,7 @@ Adafruit_SH1106 display(OLED_RESET);
 
 
 #define DEBUGLEVEL 1        // für Debug Output, für Produktion DEBUGLEVEL 0 setzen !
-#define TESTOUT             // Testoutput at setup time
+//#define TESTOUT           // Testoutput at setup time
 #include <DebugUtils.h>     // Library von Adreas Spiess
 
 // bus Shift out
@@ -101,10 +101,10 @@ static const char  *mycomponents2[] = {"Select Test: Reg 1","Select Test: Reg 2"
                                         "Select Test: Ram", "Select Test: Alu   ", "Select Test: PC", "Select Test: IR"
                     };                  
 
+/*
 //-------------------------------------------
 void test_output() {
 
-/*
 #ifdef TESTOUT
 
     enableBus(true);
@@ -145,8 +145,8 @@ void test_output() {
     pulseClock();
 
 #endif  
-*/
 }
+*/
 
 //-------------------------------------------
 void enableBus(bool what){
@@ -233,19 +233,11 @@ void ir_GO_CANCEL() {
  
     old_time_go = millis(); // letzte Schaltzeit merken  
     ir_happened = true;
-
-  /*  
-  if (mode == SELFUNC) {
-    Serial.println ("componenttion ok selected");
-  }
-  if (mode == RUNNING) {
-    Serial.println ("Cancel componenttion");
-  }
-  */
   }
 }
+
 //  to select which component to test
-//  eech buttonpress (button 1) changes display 
+//  each buttonpress (button 1) changes display 
 //  interrupt (button 2) selects the component
 // -------------------------------------------
 int whatcomponent() {
