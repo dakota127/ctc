@@ -36,20 +36,32 @@ int busValue;
    enableBus(true);        // enable output
    delay (delay_time);
 
+//  set control lines
+// to write to the reg we only need to activate one single control line (RxW).
+// if we need to activate more than one control line we would do it like this:
+//  ctrl_out =  CTRL_LINE0 | CTRL_LINE5;
+//
+//  the board under test has 2 GP registers
+//  register 1 needs CTRL_LINE0
+//  register 2 needs CTRL_LINE2
+//
    ctrl_out = (1 ?  CTRL_LINE0: CTRL_LINE2);     // set Register write
    setCtrl(ctrl_out);
-   enableCtrl(true);
+   enableCtrl(true);        // enable the ctrl lines
    delay(delay_time);
-   pulseClock();          // pulse clock
+   
+   pulseClock();            // pulse clock
    delay(delay_time > 400 ? 500 :0);
-   enableCtrl(false);     // set bus off 
-   enableBus(false);      // set Ctrl off
+   
+   enableCtrl(false);       // set bus off 
+   enableBus(false);        // set Ctrl off
    delay(delay_time);
+   
    ctrl_out = (1 ?  CTRL_LINE1: CTRL_LINE3);     // set Register enable
-   setCtrl(ctrl_out);
-   enableCtrl(true); 
+   setCtrl(ctrl_out);       // enable the ctrl lines
+   enableCtrl(true);        
 
-  int a=readBus();        // read what is on the bus
+  int a=readBus();        // read what is now on the bus
 
   if (a != busValue){
      error_anz +=1;
@@ -57,10 +69,8 @@ int busValue;
 
   String hstring =  String(a, HEX);
   hstring.toUpperCase();
-  // lcd.setCursor(0, 1);
-  //lcd.print(hstring);
   delay(delay_time);
-   enableCtrl(false); 
+  enableCtrl(false);      // disable control lines
 
   delay(delay_time);
 }
