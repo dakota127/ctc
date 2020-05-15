@@ -24,6 +24,13 @@ Adafruit_SH1106 display(OLED_RESET);
 //#define TESTOUT           // Testoutput at setup time
 #include <DebugUtils.h>     // Library von Adreas Spiess
 
+
+
+#define setup_done F("Setup done")
+#define comp_ok F("component ok")
+#define comp_unknown F("wrong component")
+#define titel  F("Component Tester...")
+
 // bus Shift out
 #define PIN_DATA_OUT 2      // to Pin 14 on HC595
 #define PIN_BUS_CLK 10      // to Pin 11 on HC595
@@ -97,9 +104,13 @@ int linepos[] = {0,0,22,40,52};           // y-position on OLED (see Adafruit GF
                                           // line3 and 4: display result   
 // strings to put to lcd/oled display
 
-static const char  *mycomponents2[] = {"Select Test: Reg 1","Select Test: Reg 2", 
-                                        "Select Test: Ram", "Select Test: Alu   ", "Select Test: PC", "Select Test: IR"
+static const char  *mycomponents2[] = {"Reg 1","Reg 2", 
+                                        "Ram", "Alu   ", "PC", "IR"
                     };                  
+
+
+
+
 
 /*
 //-------------------------------------------
@@ -247,6 +258,8 @@ bool done = false;
   int component_sel = 0;        // selected component
 
  // Serial.println ("whatcomponent()");
+
+  writeLine (2, "Select Test: ");
   writeLine (2, mycomponents2[component_sel]);    // write comp to oled
   
   do {
@@ -293,7 +306,9 @@ void setup() {
   Serial.begin(115200);
   delay(1000);  // This delay is needed to let the display to initialize
 
-  Serial.println("About to test the tester...");
+  delay(1000);
+ 
+  Serial.println(titel);
  
   pinMode(PIN_DATA_OUT, OUTPUT);
   
@@ -329,7 +344,7 @@ void setup() {
   initOled();         
   writeTitle();
   display.setFont();    // reset to regular font
-  Serial.println ("Setup done");
+  Serial.println (setup_done);
 
 }
 
@@ -348,7 +363,7 @@ void loop() {
   ir_happened == false;
   mode = SELFUNC;
   component = whatcomponent();
-  DEBUGPRINTLN1 ("component ok");
+  DEBUGPRINTLN1 (comp_ok);
 
   mode = RUNNING;
   ir_happened = false;
@@ -384,7 +399,7 @@ void loop() {
     break;
        
    default:
-   Serial.println ("wrong component");
+   Serial.println (comp_unknown);
    break; 
   }
   

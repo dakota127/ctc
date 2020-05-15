@@ -9,7 +9,7 @@
 int Variable1;                    // Create a variable to have something dynamic to show on the display
 #include <Fonts/FreeSans9pt7b.h>  // Add a custom font
 
-int16_t  x1, y1;
+// int16_t  x1, y1;
 uint16_t w, h;
 
 

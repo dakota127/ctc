@@ -9,22 +9,29 @@
 //  and the value is read from the bus and compared to what was written.
 //  Nov. 2019  Peter K. Boxler
 // -------------------------------------------
+
+
+
+#define regist F("-----> Register: ")
+#define cancel F("Cancelled...")
 int reg_test1(int reg) {
 
 int error_anz = 0;   
 
 int busValue;
+  
     writeLine (2, "Running...");
     delay(50);
+  Serial.print(regist); Serial.println(reg);
   
   for (busValue = 0; busValue <256; busValue++) {          //  loop thru values from 0 to 255
     // read the value from the adc on pin PIN_POT
     // this defines the speed
     potValue = analogRead(PIN_POT);
     delay_time = potValue * 4;  
-    
+    Serial.println (delay_time);
     if (ir_happened == true) {
-      writeLine (4, "Cancelled...");
+      writeLine (4, "cancelled..");
       
       delay(50);
       delay(1000);;
@@ -32,6 +39,8 @@ int busValue;
     }
 
 // start/continue with the test
+
+ //   Serial.print ("bus: ");  Serial.println (busValue);
    setBus(busValue);              // shift output data to bus
    enableBus(true);        // enable output
    delay (delay_time);
@@ -45,7 +54,8 @@ int busValue;
 //  register 1 needs CTRL_LINE0
 //  register 2 needs CTRL_LINE2
 //
-   ctrl_out = (1 ?  CTRL_LINE0: CTRL_LINE2);     // set Register write
+   ctrl_out = (reg ==1 ?  CTRL_LINE0: CTRL_LINE2);     // set Register write
+ //  Serial.print ("ctrl_out: "); Serial.println(ctrl_out);
    setCtrl(ctrl_out);
    enableCtrl(true);        // enable the ctrl lines
    delay(delay_time);
@@ -57,7 +67,7 @@ int busValue;
    enableBus(false);        // set Ctrl off
    delay(delay_time);
    
-   ctrl_out = (1 ?  CTRL_LINE1: CTRL_LINE3);     // set Register enable
+   ctrl_out = (reg==1 ?  CTRL_LINE1: CTRL_LINE3);     // set Register enable
    setCtrl(ctrl_out);       // enable the ctrl lines
    enableCtrl(true);        
 
@@ -87,16 +97,16 @@ int error[] = {0,0};
 
    
     if (error[0] == 99) {
-      Serial.println ("test cancelled");
+      Serial.println (cancel);
       return(99);
     }
     
    
     
-    error[1] = reg_test1 (2);
+    error[1] = reg_test1 (2);   // call the actual test -------------
 
     if (error[1] == 99) {
-      Serial.println ("test cancelled");
+      Serial.println (cancel);
       return(99);
     }
 
