@@ -13,14 +13,17 @@
 
 
 #define regist F("-----> Register: ")
-#define cancel F("Cancelled...")
+
+
+//---------------------------------------------
 int reg_test1(int reg) {
 
 int error_anz = 0;   
 
 int busValue;
-  
-    writeLine (2, "Running...");
+
+   Serial.println ("REG1 Test...");
+
     delay(50);
   Serial.print(regist); Serial.println(reg);
   
@@ -93,6 +96,8 @@ int busValue;
 void reg_board1() {
 
 int error[] = {0,0};
+
+   writeLine (2, "Testing Reg 1...");
     error[0] = reg_test1(1);
 
    
@@ -102,7 +107,7 @@ int error[] = {0,0};
     }
     
    
-    
+    writeLine (2, "Testing Reg 2...");
     error[1] = reg_test1 (2);   // call the actual test -------------
 
     if (error[1] == 99) {

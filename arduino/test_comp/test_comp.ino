@@ -19,15 +19,21 @@
 #define OLED_RESET 4
 Adafruit_SH1106 display(OLED_RESET);
 
+#define ZERO_PADDING8 8
+#define PRINTBIN(Num) for (uint32_t t = (1UL<< (sizeof(Num)*8)-1); t; t >>= 1) Serial.write(Num  & t ? '1' : '0'); // Prints a binary number with leading zeros (Automatic Handling)
+#define PRINTBINL(Num) for (int i=0;i<(sizeof(Num)*8);i++) Serial.write(((Num >> i) & 1) == 1 ? '1' : '0'); // Prints a binary number with following Placeholder Zeros  (Automatic Handling)
+
+
 
 #define DEBUGLEVEL 1        // für Debug Output, für Produktion DEBUGLEVEL 0 setzen !
 //#define TESTOUT           // Testoutput at setup time
 #include <DebugUtils.h>     // Library von Adreas Spiess
 
 
+#define cancel F("Cancelled...")
 
 #define setup_done F("Setup done")
-#define comp_ok F("component ok")
+#define comp_ok F("component done")
 #define comp_unknown F("wrong component")
 #define titel  F("Component Tester...")
 
@@ -159,6 +165,22 @@ void test_output() {
 }
 */
 
+
+//--------------------------------------
+void SPrintZeroPadBin8(uint8_t number) {
+char binstr[]="00000000";
+uint8_t i=0;
+uint16_t n=number;
+
+   while(n>0 && i<ZERO_PADDING8){
+      binstr[ZERO_PADDING8-1-i] =  n%2  +  '0';
+      ++i;
+      n/=2;
+   }
+  
+   Serial.println(binstr);
+}
+
 //-------------------------------------------
 void enableBus(bool what){
   
@@ -175,6 +197,7 @@ void enableCtrl(bool what){
 
 //-------------------------------------------
 void setBus(int data_out){
+ // DEBUGPRINT1 ("Assert bus: ");  DEBUGPRINTLN1 (data_out);
   shiftOut (PIN_DATA_OUT, PIN_BUS_CLK, LSBFIRST, data_out);
   digitalWrite (PIN_BUS_LATCH, LOW);
   digitalWrite (PIN_BUS_LATCH, HIGH);
@@ -193,6 +216,11 @@ void pulseClock(){
 
 //-------------------------------------------
 void setCtrl(uint16_t ctrl_bits){
+
+//Serial.println("Integer as Binary with Zero Padding8: ");  
+    
+ // Serial.print ("set ctlr: ");  SPrintZeroPadBin8(ctrl_bits);
+//  DEBUGPRINT1 ("set ctlr: ");  DEBUGPRINTLN1 (ctrl_bits);
   shiftOut (PIN_DATA_OUT, PIN_CTRL_CLK, MSBFIRST, ctrl_bits << 8);
   shiftOut (PIN_DATA_OUT, PIN_CTRL_CLK, MSBFIRST, ctrl_bits);
   digitalWrite (PIN_CTRL_LATCH, LOW);
@@ -344,6 +372,8 @@ void setup() {
   initOled();         
   writeTitle();
   display.setFont();    // reset to regular font
+  ctrl_out = 0;            // alle disabled
+  setCtrl(ctrl_out);
   Serial.println (setup_done);
 
 }
@@ -379,7 +409,7 @@ void loop() {
     break;
     
  case 3:
-    mem_test();
+    ram_test();
     delay(100);;
     break;
     
@@ -403,8 +433,9 @@ void loop() {
    break; 
   }
   
-
- ir_happened = false;
+  ctrl_out = 0;            // alle disabled
+  setCtrl(ctrl_out);
+  ir_happened = false;
  
 }
 
