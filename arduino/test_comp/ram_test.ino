@@ -43,7 +43,8 @@ int data_byte;
    delay (delay_time);
 
 //  set control lines
-// to write to the reg we only need to activate one single control line (RxW).
+// to write to the ram we first need to write the desired adress to the memory address register. This is done
+// by activating the MARW ctrl line. 
 // if we need to activate more than one control line we would do it like this:
 //  ctrl_out =  CTRL_LINE0 | CTRL_LINE5;
 //
@@ -113,10 +114,6 @@ int error_anz = 0;
    enableBus(true);        // enable output
    delay (delay_time);
 
-//  set control lines
-// to write to the reg we only need to activate one single control line (RxW).
-// if we need to activate more than one control line we would do it like this:
-//  ctrl_out =  CTRL_LINE0 | CTRL_LINE5;
 //
 //  the board under test needs these ctrl lines: MARW, ME, MW 
 //
